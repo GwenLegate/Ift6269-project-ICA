@@ -6,9 +6,9 @@ class ICA:
     def __init__(self, n_components):
         self.n_components = n_components
 
-    def separate(self, X, method):
+    def separate(self, X, method="fastica"):
         if method not in ["fastica", "joint_likelihood"]:
-            warnings.warn("Method must be one of \"fastica\" or \"joint_likelihood\"")
+            warnings.warn("Method must be one of \"fastica\" or \"joint_likelihood\". defaulting to fastica...")
             method = "fastica"
         if X.shape[1] < self.n_components:
             warnings.warn(
