@@ -11,15 +11,16 @@ class ICA:
             warnings.warn("Method must be one of \"fastica\" or \"joint_likelihood\"")
             method = "fastica"
         if X.shape[1] < self.n_components:
-            warnings.warn("Warning: X.shape[1] must be >= n_components (at least as many observed signals as independent sources).")
+            warnings.warn(
+                "Warning: X.shape[1] must be >= n_components (at least as many observed signals as independent sources).")
 
         X = self.preprocess(X)
 
-        if method=="fastica": # based on maximization of negentropy
+        if method == "fastica":  # based on maximization of negentropy
             S = self.__fastICA(X)
             return S
 
-        if method=="joint_likelihood":
+        if method == "joint_likelihood":
             S = self.__joint_likelihood(X)
             return S
 
@@ -49,8 +50,7 @@ class ICA:
                     j += 1
                 wp = wp - w_sum
                 wp = wp / np.linalg.norm(wp)
-                #lim = max(abs(abs(np.diag(np.dot(wp, wp_old.T))) - 1))
-                lim = np.abs(np.abs(np.dot(wp.squeeze(1),wp_old.squeeze(1)))-1)
+                lim = np.abs(np.abs(np.dot(wp.squeeze(1), wp_old.squeeze(1))) - 1)
                 if lim < 0.001:
                     converged = True
             W[p] = np.squeeze(wp)
