@@ -1,6 +1,7 @@
 import warnings
 import numpy as np
 
+# fastICA implementation based on https://www.cs.helsinki.fi/u/ahyvarin/papers/NN00new.pdf
 
 class fastICA:
     def __init__(self, n_components):
