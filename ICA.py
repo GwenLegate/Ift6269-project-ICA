@@ -28,8 +28,18 @@ class ICA:
         X = X - np.mean(X, axis=0)
         cov = np.einsum("ni,nj->ij", X, X) / X.shape[0]
         eigenvalues, E = np.linalg.eig(cov)
-        D_inv_half = np.diag(eigenvalues ** (-0.5))
-        X_tilde = np.einsum('ij,kj->ik', np.dot(E, D_inv_half).dot(E.T), X).T
+
+        # select n_components
+        sorted_idx = (np.argsort(eigenvalues).tolist())[::-1]
+        truncated = np.zeros((E.shape[0], self.n_components))
+        truncated_eivalues = np.zeros(self.n_components)
+        for k in range(self.n_components):
+            truncated[:, k] = E[:, sorted_idx[k]]
+            truncated_eivalues[k] = eigenvalues[sorted_idx[k]]
+
+        D_inv_half = np.diag(truncated_eivalues ** (-0.5))
+        X_tilde = ((D_inv_half @ truncated.T) @ X.T).T
+
         return X_tilde
 
     def __fastICA(self, X):
@@ -56,7 +66,29 @@ class ICA:
             W[p] = np.squeeze(wp)
         return W @ X.T
 
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-x))
+
     def __joint_likelihood(self, X):
-        # not implemented yet
-        W = np.zeros((X.shape[1], self.n_components)).T
+        # not working yet
+        batch_size = 64
+        lr = 0.001
+        W = np.random.rand(X.shape[1], self.n_components).T
+        rng = np.random.default_rng()
+        converged = False
+        epoch = 0
+        while not converged and epoch < 10000:
+            W_old = W
+            indices = rng.choice(X.shape[0], batch_size, replace=False)
+            W_sum = np.zeros_like(W)
+            for idx in indices:
+                v = 1 - 2.0 * self.sigmoid(W @ X[idx])
+                v = np.outer(v, X[idx]) + np.linalg.pinv(W.T)
+                W_sum += v
+            W = W + lr * (W_sum / batch_size)
+            lim = np.linalg.norm(W - W_old)
+            if lim < 0.00001:
+                converged = True
+            epoch += 1
+            print("epoch {} \t loss: {}".format(epoch, lim))
         return W @ X.T
