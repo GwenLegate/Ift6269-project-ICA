@@ -7,7 +7,7 @@ class ICA_MLE:
 
     def __init__(self):
         self.max_iter = 1000
-        self.stop_criteria = 1E-6
+        self.stop_criteria = 1E-6 #0.007 I used this stop criteria to get the image separation to converge
 
     def sigmoid(self, z):
         # Numerically stable sigmoid
@@ -83,6 +83,6 @@ class ICA_MLE:
                 converged = True
 
             epoch += 1
-            print("epoch {} \t loss: {}".format(epoch, lim))
+            #print("epoch {} \t loss: {}".format(epoch, lim))
 
         return W @ X_tilde

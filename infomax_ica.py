@@ -1,8 +1,6 @@
-from scipy.io import wavfile
 import numpy as np
 import evaluate
 import utils
-
 
 class Infomax_ICA:
     def __init__(self, X, n_components):
@@ -117,11 +115,17 @@ if __name__ == "__main__":
     img3 = utils.load_img('images/mix3.png', False).ravel()
     X = np.row_stack((img1, img2, img3))
     print(X.shape)
+
     infomax_ica1 = Infomax_ICA(X, X.shape[0])
     S = infomax_ica1.ica()
     print(evaluate.correlation(S))
 
+    '''C = 3
+    ica = ICA(C)
+    S = ica.separate(X.T, "fastica").T'''
+
     utils.show_img(S[0].reshape((500, 500, 3)))
     utils.show_img(S[1].reshape((500, 500, 3)))
     utils.show_img(S[2].reshape((500, 500, 3)))
+
 

@@ -92,3 +92,19 @@ class ICA:
             epoch += 1
             print("epoch {} \t loss: {}".format(epoch, lim))
         return W @ X.T
+import utils
+if __name__ == "__main__":
+    img1 = utils.load_img('images/mix1.png', False).ravel()
+    img2 = utils.load_img('images/mix2.png', False).ravel()
+    img3 = utils.load_img('images/mix3.png', False).ravel()
+    X = np.row_stack((img1, img2, img3))
+    print(X.shape)
+
+    C = 3
+    ica = ICA(C)
+    S = ica.separate(X.T, "fastica")
+    print(S.shape)
+
+    utils.show_img(S[0].reshape((500, 500, 3)))
+    utils.show_img(S[1].reshape((500, 500, 3)))
+    utils.show_img(S[2].reshape((500, 500, 3)))
