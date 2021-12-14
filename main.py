@@ -16,8 +16,8 @@ sample_rates = np.row_stack((sample_rate1, sample_rate2))
 # separate sound files infomax ICA
 '''infomax = Infomax_ICA(data_sound, data_sound.shape[0])
 S = infomax.ica()
-print(S[0, :10])
-print(evaluate.correlation(S))'''
+print(S[0, :10])'''
+#print(evaluate.correlation(S))
 
 # load mixed images and stack them
 img1 = utils.load_img('images/mix1.png', False).ravel()
@@ -41,14 +41,18 @@ S = ica.separate(X.T, "fastica")
 print(f'execution time: {time.time() - start_time}')'''
 
 
-# mle ica image separate
+# annealed sgd ica image separate
 
-start_time = time.time()
+'''start_time = time.time()
 mle_ica = ICA_MLE()
 S = mle_ica.sgd(X)
+print(f'execution time: {time.time() - start_time}')'''
+
+# quasi newton ICA
+start_time = time.time()
+mle_ica = ICA_MLE()
+S = mle_ica.quasi_newton_ica(X)
 print(f'execution time: {time.time() - start_time}')
-
-
 # show separated images
 utils.show_img(S[0].reshape((500, 500, 3)))
 utils.show_img(S[1].reshape((500, 500, 3)))
